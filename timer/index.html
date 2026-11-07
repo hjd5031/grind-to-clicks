@@ -6,10 +6,10 @@
 <meta name="description" content="A guided pour-over timer and free stopwatch with lap times.">
 <title>Brew timer · Grind to Clicks</title>
 <link rel="icon" href="../assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css?v=1.2">
+<link rel="stylesheet" href="../assets/style.css?v=1.3">
 <script src="../assets/select.js?v=1.2" defer></script>
 <script src="../assets/grinders.js?v=1.2" defer></script>
-<script src="../assets/timer.js?v=1.2" defer></script>
+<script src="../assets/timer.js?v=1.3" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -33,14 +33,29 @@
 <noscript><p>Enable JavaScript to use the stopwatch.</p></noscript>
 </section>
 <section class="card tool laps" id="guide-panel" aria-labelledby="guide-title">
-<div class="card-heading recipe-heading"><div><h2 id="guide-title">Pour-over guide</h2><p id="recipe-summary"></p></div><button class="button secondary" id="edit-recipe" type="button" disabled>Edit recipe</button></div>
-<div class="preset-field"><label for="recipe-preset">Recipe preset</label><select id="recipe-preset"><option value="default">House pour-over</option><option value="kasuya">Tetsu Kasuya · 4:6 (hot)</option><option value="hoffmann">James Hoffmann · V60</option></select><p class="field-note" id="preset-note" hidden></p><a class="preset-source" id="preset-source" hidden>View recipe notes</a></div>
+<div class="card-heading recipe-heading"><div><h2 id="guide-title">Pour-over guide</h2><p id="recipe-summary"></p><p id="recipe-ratio" class="brew-ratio"></p></div><button class="button secondary" id="edit-recipe" type="button" disabled>Edit recipe</button></div>
+<div class="preset-field"><label for="recipe-preset">Recipe preset</label><select id="recipe-preset">
+<option value="default">House pour-over</option>
+<option value="kasuya">Tetsu Kasuya · 4:6 (hot)</option>
+<option value="hoffmann">James Hoffmann · V60</option>
+<option value="ahnstar-20">AhnStar · Hot 20 g</option>
+<option value="ahnstar-40">AhnStar · Hot 40 g</option>
+<option value="momos-filter">Momos Coffee · V60 concentrate</option>
+<option value="toch-v60">T.O.CH Coffee · V60 hot</option>
+<option value="yongchaem-switch">용챔 · Hario Switch iced</option>
+<option value="rule-484">정인성 (룰커피) · 4-8-4 hot</option>
+<option value="rule-8g">정인성 (룰커피) · 8 g</option>
+<option value="deep-blue-orea-hot">Deep Blue Lake · Orea V4 hot</option>
+<option value="deep-blue-orea-iced">Deep Blue Lake · Orea V4 iced</option>
+<option value="deep-blue-v60-hot">Deep Blue Lake · V60 hot</option>
+</select><p class="field-note" id="preset-note" hidden></p><a class="preset-source" id="preset-source" hidden>View recipe notes</a></div>
 <ol class="steps" id="guide-list" aria-label="Brew stages"></ol>
 <dialog id="recipe-editor" aria-labelledby="editor-title">
 <form id="recipe-form">
 <h2 id="editor-title">Edit recipe</h2>
 <label for="coffee-grams">Coffee (g)</label>
 <input id="coffee-grams" type="number" inputmode="decimal" min=".1" max="9999" step=".1" required autofocus>
+<p class="brew-ratio" id="editor-ratio"></p>
 <p class="field-note">Enter the time and water to add for each step. Use 0 g for a wait or drawdown.</p>
 <div id="recipe-steps"></div>
 <div class="editor-actions">
@@ -61,7 +76,7 @@
 <label>Duration (seconds)<input name="duration" type="number" inputmode="numeric" min="1" max="3600" step="1" required></label>
 <label>Water to add (g)<input name="water" type="number" inputmode="decimal" min="0" max="9999" step=".1" required></label>
 </div>
-<label>Instructions <span class="field-note">(optional)</span><input name="note" maxlength="160"></label>
+<label>Instructions <span class="field-note">(optional)</span><textarea name="note" rows="3" maxlength="160"></textarea></label>
 <button class="button secondary remove-step" type="button">Remove step</button>
 </fieldset>
 </template>

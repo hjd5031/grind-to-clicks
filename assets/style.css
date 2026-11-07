@@ -113,12 +113,19 @@ button:disabled { cursor: default; opacity: .62; }
 .laps li[aria-current] { background: var(--sand); box-shadow: inset .24rem 0 var(--accent); }
 .laps li span { color: var(--muted); font-size: .85rem; }
 .recipe-heading { display: flex; flex-wrap: wrap; align-items: start; justify-content: space-between; gap: .65rem; }
-#recipe-editor { width: min(100% - 1.5rem, 36rem); max-height: 90dvh; padding: clamp(1rem, 4vw, 1.75rem); border: 1px solid var(--edge); border-radius: 1rem; background: var(--card); color: var(--ink); }
+.brew-ratio { color: var(--espresso); font-weight: 750; line-height: 1.45; overflow-wrap: anywhere; }
+.recipe-heading .brew-ratio { color: var(--espresso); }
+#editor-ratio { margin-bottom: .55rem; }
+#recipe-editor { width: min(calc(100% - 1.5rem), 36rem); max-height: calc(100dvh - 1.5rem); padding: clamp(1rem, 4vw, 1.75rem); overflow: auto; border: 1px solid var(--edge); border-radius: 1rem; background: var(--card); color: var(--ink); }
 #recipe-editor::backdrop { background: #2c1a1480; }
+#recipe-editor :is(h2, label, p, button), .steps li > *, #timer-state { min-width: 0; overflow-wrap: anywhere; }
 #recipe-form h2, #coffee-grams { margin-bottom: .85rem; }
 .recipe-step { min-inline-size: 0; margin: .85rem 0 0; padding: .8rem; border: 0; border-radius: .65rem; background: var(--paper); }
 .recipe-step legend { font-weight: 750; padding: 0 .25rem; }
-.recipe-step input { display: block; margin-top: .3rem; }
+.recipe-step :is(input, textarea) { display: block; min-width: 0; max-width: 100%; margin-top: .3rem; }
+.recipe-step textarea { width: 100%; padding: .62rem .8rem; resize: vertical; font: inherit; font-weight: 400; color: var(--ink); background: var(--card); border: 1px solid var(--edge); border-radius: .7rem; }
+.brew-gauge .gauge-core { grid-template-columns: minmax(0, 75%); justify-content: center; }
+#stage { overflow-wrap: anywhere; }
 .recipe-amounts { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 10rem), 1fr)); gap: 0 .65rem; }
 .editor-actions { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: .85rem; }
 .editor-actions:last-child { justify-content: end; }
