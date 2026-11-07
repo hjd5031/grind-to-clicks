@@ -6,9 +6,9 @@
 <meta name="description" content="A guided pour-over timer and free stopwatch with lap times.">
 <title>Brew timer · Grind to Clicks</title>
 <link rel="icon" href="../assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css">
+<link rel="stylesheet" href="../assets/style.css?v=1.1">
 <script src="../assets/grinders.js" defer></script>
-<script src="../assets/timer.js" defer></script>
+<script src="../assets/timer.js?v=1.1" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -32,9 +32,37 @@
 <noscript><p>Enable JavaScript to use the stopwatch.</p></noscript>
 </section>
 <section class="card tool laps" id="guide-panel" aria-labelledby="guide-title">
-<div class="card-heading"><div><h2 id="guide-title">Pour-over guide</h2><p>15 g coffee · 250 g water</p></div></div>
+<div class="card-heading recipe-heading"><div><h2 id="guide-title">Pour-over guide</h2><p id="recipe-summary"></p></div><button class="button secondary" id="edit-recipe" type="button" disabled>Edit recipe</button></div>
 <ol class="steps" id="guide-list" aria-label="Brew stages"></ol>
-<p class="field-note">An example recipe for a cone dripper. Rinse the filter and add the grounds before starting.</p>
+<dialog id="recipe-editor" aria-labelledby="editor-title">
+<form id="recipe-form">
+<h2 id="editor-title">Edit recipe</h2>
+<label for="coffee-grams">Coffee (g)</label>
+<input id="coffee-grams" type="number" inputmode="decimal" min=".1" max="9999" step=".1" required autofocus>
+<p class="field-note">Enter the time and water to add for each step. Use 0 g for a wait or drawdown.</p>
+<div id="recipe-steps"></div>
+<div class="editor-actions">
+<button class="button secondary" id="add-step" type="button">Add step</button>
+<button class="button secondary" id="default-recipe" type="button">Load defaults</button>
+</div>
+<div class="editor-actions">
+<button class="button secondary" id="cancel-recipe" type="button">Cancel</button>
+<button class="button primary" type="submit">Save recipe</button>
+</div>
+</form>
+</dialog>
+<template id="recipe-step-template">
+<fieldset class="recipe-step">
+<legend></legend>
+<label>Step name<input name="title" required maxlength="40"></label>
+<div class="recipe-amounts">
+<label>Duration (seconds)<input name="duration" type="number" inputmode="numeric" min="1" max="3600" step="1" required></label>
+<label>Water to add (g)<input name="water" type="number" inputmode="decimal" min="0" max="9999" step=".1" required></label>
+</div>
+<label>Instructions <span class="field-note">(optional)</span><input name="note" maxlength="160"></label>
+<button class="button secondary remove-step" type="button">Remove step</button>
+</fieldset>
+</template>
 </section>
 <section class="card tool laps" id="lap-panel" aria-labelledby="laps-title" hidden>
 <div class="card-heading"><div><h2 id="laps-title">Brew laps</h2><p>Record a time for each pour.</p></div></div>
