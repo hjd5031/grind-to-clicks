@@ -16,13 +16,15 @@
 <a class="brand" href="./"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="7" ry="9" transform="rotate(35 12 12)"/><path d="M16 5c-5 2-1 8-8 14"/></svg></span>Grind to Clicks</a>
 <nav aria-label="Main navigation"><a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-4M12 2v2M2 12h2m16 0h2m-10 8v2"/><circle cx="12" cy="12" r="1"/></svg>Calculator</a><a href="./timer/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6m-3 0v3m5 1 2-2"/></svg>Brew timer</a><a href="./changelog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6m-6 4h6m-6 4h4"/></svg>Changelog</a></nav>
 </div></header>
-<main id="main" class="wrap"><section class="hero"><div class="hero-copy"><p class="eyebrow"><span></span>Coffee tools / 01</p><h1>Grind by the <em>numbers.</em></h1><p class="lede">Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.</p></div></section>
+<main id="main" class="wrap"><header class="page-heading"><h1>Coffee grind size converter</h1><p class="lede">Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.</p></header>
 <div class="tool-grid">
 <section class="card tool" aria-labelledby="calc-title">
-<div class="card-heading"><span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-4M12 2v2M2 12h2m16 0h2m-10 8v2"/><circle cx="12" cy="12" r="1"/></svg></span><div><h2 id="calc-title">Grind calculator</h2><p>Find a starting point from zero.</p></div></div>
+<div class="card-heading"><div><h2 id="calc-title">Grinder settings</h2></div></div>
 <form id="grind-form">
-<label for="grinder">Grinder model</label>
-<select id="grinder" required aria-describedby="model-spec"><option value="">Select a grinder</option></select>
+<div class="grinder-fields">
+<div><label for="brand">Brand</label><select id="brand" required><option value="">Select a brand</option></select></div>
+<div><label for="grinder">Grinder model</label><select id="grinder" required disabled aria-describedby="model-spec"><option value="">Select a brand first</option></select></div>
+</div>
 <p class="field-note" id="model-spec" hidden></p>
 <label for="microns">Target grind size</label>
 <div class="unit-field"><input id="microns" type="number" min="1" step="any" inputmode="decimal" placeholder="e.g. 600" required aria-describedby="size-note calc-error"><span aria-hidden="true">µm</span></div>
@@ -34,17 +36,16 @@
 <noscript><p>Enable JavaScript to calculate a setting.</p></noscript>
 </section>
 <section class="card result-card" aria-labelledby="result-title">
-<div class="result-heading"><p class="eyebrow"><span></span>FROM ZERO</p><h2 id="result-title">Estimated setting</h2></div>
-<div class="gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small>CLICKS</small></div></div>
+<h2 id="result-title">Estimated setting</h2>
+<div class="gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small>Clicks from zero</small></div></div>
 <p id="result-summary" role="status">Choose a grinder and enter your target to see a click estimate.</p>
 <p class="result-note">Based on burr travel. Actual particle size varies.</p>
 <a id="spec-link" hidden>View grinder reference <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
 </section>
 </div>
-<div class="support-grid">
+<div class="support">
 <details class="card help"><summary>How is this calculated?</summary><p>We divide the target by the profile’s nominal burr travel per click and round to the nearest click. The estimate counts from your grinder’s zero point. Burr travel and the size of ground coffee particles are different measurements, so use this as a starting point and adjust after brewing.</p><a href="https://www.option-o.com/wbrc-resource">Read about grind measurements <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></details>
-<a class="card shortcut" href="./timer/"><span class="tile-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6m-3 0v3m5 1 2-2"/></svg></span><div><strong>Ready to brew?</strong><span>Go straight to the timer.</span></div><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
 </div></main>
-<footer class="wrap footer"><span>Grind to Clicks</span><a href="https://github.com/hjd5031/grind-to-clicks">Source on GitHub <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></footer>
+<footer class="wrap footer"><a href="https://github.com/hjd5031/grind-to-clicks">View source on GitHub</a></footer>
 </body>
 </html>

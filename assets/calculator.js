@@ -1,4 +1,5 @@
 const form = document.querySelector("#grind-form");
+const brand = document.querySelector("#brand");
 const grinder = document.querySelector("#grinder");
 const microns = document.querySelector("#microns");
 const spec = document.querySelector("#model-spec");
@@ -10,13 +11,17 @@ const summary = document.querySelector("#result-summary");
 const reference = document.querySelector("#spec-link");
 const idleMessage = summary.textContent;
 
-for (const brand of new Set(grinderProfiles.map((profile) => profile.brand))) {
-  const group = document.createElement("optgroup");
-  group.label = brand;
-  for (const profile of grinderProfiles.filter((entry) => entry.brand === brand)) {
-    group.append(new Option(profile.model, profile.id));
+for (const name of new Set(grinderProfiles.map((profile) => profile.brand))) {
+  brand.append(new Option(name, name));
+}
+
+function updateModels() {
+  grinder.disabled = !brand.value;
+  grinder.replaceChildren(new Option(brand.value ? "Select a model" : "Select a brand first", ""));
+  for (const profile of grinderProfiles.filter((entry) => entry.brand === brand.value)) {
+    grinder.append(new Option(profile.model, profile.id));
   }
-  grinder.append(group);
+  updateInput();
 }
 
 function updateInput() {
@@ -33,7 +38,9 @@ function updateInput() {
   next.hidden = true;
 }
 
-form.addEventListener("input", updateInput);
+brand.addEventListener("change", updateModels);
+grinder.addEventListener("change", updateInput);
+microns.addEventListener("input", updateInput);
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const profile = grinderProfiles.find((entry) => entry.id === grinder.value);
@@ -56,5 +63,5 @@ form.addEventListener("submit", (event) => {
   calculate.hidden = true;
   next.focus();
 });
-updateInput();
+updateModels();
 
