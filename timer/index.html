@@ -6,9 +6,10 @@
 <meta name="description" content="A guided pour-over timer and free stopwatch with lap times.">
 <title>Brew timer · Grind to Clicks</title>
 <link rel="icon" href="../assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="../assets/style.css?v=1.1">
-<script src="../assets/grinders.js" defer></script>
-<script src="../assets/timer.js?v=1.1" defer></script>
+<link rel="stylesheet" href="../assets/style.css?v=1.2">
+<script src="../assets/select.js?v=1.2" defer></script>
+<script src="../assets/grinders.js?v=1.2" defer></script>
+<script src="../assets/timer.js?v=1.2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -33,6 +34,7 @@
 </section>
 <section class="card tool laps" id="guide-panel" aria-labelledby="guide-title">
 <div class="card-heading recipe-heading"><div><h2 id="guide-title">Pour-over guide</h2><p id="recipe-summary"></p></div><button class="button secondary" id="edit-recipe" type="button" disabled>Edit recipe</button></div>
+<div class="preset-field"><label for="recipe-preset">Recipe preset</label><select id="recipe-preset"><option value="default">House pour-over</option><option value="kasuya">Tetsu Kasuya · 4:6 (hot)</option><option value="hoffmann">James Hoffmann · V60</option></select><p class="field-note" id="preset-note" hidden></p><a class="preset-source" id="preset-source" hidden>View recipe notes</a></div>
 <ol class="steps" id="guide-list" aria-label="Brew stages"></ol>
 <dialog id="recipe-editor" aria-labelledby="editor-title">
 <form id="recipe-form">

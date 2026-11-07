@@ -54,6 +54,18 @@ label { display: block; font-weight: 750; font-size: .92rem; margin-bottom: .45r
 select, input { width: 100%; min-height: 3.15rem; color: var(--ink); background: var(--card); border: 1px solid var(--edge); border-radius: .7rem; padding: .62rem .8rem; }
 input::placeholder { color: var(--muted); opacity: 1; }
 .grinder-fields { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1rem; margin-bottom: 1.2rem; }
+.coffee-select { position: relative; color: var(--ink); text-align: left; }
+.coffee-select summary { display: flex; align-items: center; justify-content: space-between; gap: .6rem; min-height: 3.15rem; padding: .62rem .8rem; border: 1px solid var(--edge); border-radius: .7rem; background: var(--card); list-style: none; cursor: pointer; overflow-wrap: anywhere; }
+.coffee-select summary::-webkit-details-marker { display: none; }
+.coffee-select summary::after { content: ""; width: .5rem; height: .5rem; flex: none; border: solid currentColor; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); margin: -.25rem .15rem 0 0; }
+.coffee-select summary[aria-disabled="true"] { background: var(--paper); color: var(--muted); cursor: default; }
+.coffee-options { position: absolute; z-index: 2; inset-inline: 0; top: calc(100% + .35rem); max-height: min(15rem, 42vh); overflow: auto; padding: .3rem; background: var(--card); border: 1px solid var(--edge); border-radius: .65rem; box-shadow: 0 .4rem 1rem #2c1a1426; }
+.coffee-options button { display: block; width: 100%; min-height: 2.65rem; padding: .45rem .55rem; text-align: left; color: var(--ink); background: var(--card); border: 0; border-radius: .35rem; cursor: pointer; }
+.coffee-options button:hover, .coffee-options button[aria-pressed="true"] { background: var(--sand); }
+.coffee-options button:focus-visible { outline-offset: -3px; }
+.timer-card .coffee-options button:focus-visible { outline-color: var(--focus); }
+.preset-field { margin-bottom: 1rem; }
+.preset-source { display: inline-block; margin-top: .35rem; font-size: .85rem; color: var(--accent); }
 #model-spec { margin: -.45rem 0 .9rem; }
 select:disabled { background: var(--paper); color: var(--muted); opacity: 1; }
 .unit-field { position: relative; }

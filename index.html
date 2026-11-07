@@ -6,9 +6,10 @@
 <meta name="description" content="Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.">
 <title>Coffee Grind Size Converter: Microns to Clicks | Grind to Clicks</title>
 <link rel="icon" href="./assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./assets/style.css?v=1.1">
-<script src="./assets/grinders.js" defer></script>
-<script src="./assets/calculator.js?v=1.1" defer></script>
+<link rel="stylesheet" href="./assets/style.css?v=1.2">
+<script src="./assets/select.js?v=1.2" defer></script>
+<script src="./assets/grinders.js?v=1.2" defer></script>
+<script src="./assets/calculator.js?v=1.2" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -37,14 +38,14 @@
 </section>
 <section class="card result-card" aria-labelledby="result-title">
 <h2 id="result-title">Estimated setting</h2>
-<div class="gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small>Clicks from zero</small></div></div>
+<div class="gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small id="gauge-unit">Clicks from zero</small></div></div>
 <p id="result-summary" role="status">Choose a grinder and enter your target to see a click estimate.</p>
-<p class="result-note">Based on burr travel. Actual particle size varies.</p>
+<p class="result-note" id="result-note" hidden></p>
 <a id="spec-link" hidden>View grinder reference <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
 </section>
 </div>
 <div class="support">
-<details class="card help"><summary>How is this calculated?</summary><p>We divide the target by the profile’s nominal burr travel per click and round to the nearest click. The estimate counts from your grinder’s zero point. Burr travel and the size of ground coffee particles are different measurements, so use this as a starting point and adjust after brewing.</p><a href="https://www.option-o.com/wbrc-resource">Read about grind measurements <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a></details>
+<details class="card help"><summary>How is this calculated?</summary><p>We use published measurements of ground coffee at known click settings. We average neighboring measurements where the trend reverses, then interpolate within the supported range and round to the nearest click. Results are starting points and can vary with the beans and grinder zero point.</p><p>Check the statistic next to your result. Onyx labels its values average particle size. The K6 source reports the median (D50). These statistics can differ. For Red Clix, we apply <a href="https://comandantegrinder.com/products/red-clix-drivetrain-set">Comandante’s 2:1 click ratio</a> to the C40 reference. Models without enough measurements link to their manufacturer’s setting guide.</p></details>
 </div></main>
 <footer class="wrap footer"><a href="https://github.com/hjd5031/grind-to-clicks">View source on GitHub</a></footer>
 </body>
