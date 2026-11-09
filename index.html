@@ -6,10 +6,10 @@
 <meta name="description" content="Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.">
 <title>Coffee Grind Size Converter: Microns to Clicks | Grind to Clicks</title>
 <link rel="icon" href="./assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./assets/style.css?v=1.7">
+<link rel="stylesheet" href="./assets/style.css?v=1.8">
 <script src="./assets/select.js?v=1.4" defer></script>
 <script src="./assets/grinders.js?v=1.7" defer></script>
-<script src="./assets/calculator.js?v=1.7" defer></script>
+<script src="./assets/calculator.js?v=1.8" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -29,8 +29,8 @@
 <p class="field-note" id="model-spec" hidden></p>
 <fieldset class="conversion-mode">
 <legend>Conversion direction</legend>
-<label><input type="radio" name="direction" value="forward" checked> µm to setting</label>
-<label><input type="radio" name="direction" value="reverse"> Setting to µm</label>
+<label><input type="radio" name="direction" value="forward" checked> µm to Clicks</label>
+<label><input type="radio" name="direction" value="reverse"> Clicks to µm</label>
 </fieldset>
 <div id="size-field">
 <label for="microns">Target grind size</label>
@@ -41,6 +41,11 @@
 <label for="position" id="position-label">Clicks from zero</label>
 <input id="position" disabled aria-describedby="position-note calc-error">
 <p class="field-note" id="position-note"></p>
+</div>
+<div class="destination-field">
+<label for="destination">Convert to another grinder <span class="field-note">(optional)</span></label>
+<select id="destination" aria-describedby="destination-note"><option value="none">No other grinder</option></select>
+<p class="field-note" id="destination-note">Choose your grinder to get its clicks or dial position.</p>
 </div>
 <p id="calc-error" class="error" role="alert" hidden></p>
 <button id="calculate" class="button primary" type="submit"><span id="calculate-label">Calculate clicks</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
@@ -59,6 +64,7 @@
 <p class="result-note" id="comparison-note" hidden>Brewer-reported reference: C40 Standard 21 clicks and K-Ultra about 65 clicks for the same 750 µm recipe target.</p>
 <a class="result-reference" id="comparison-timer" href="./timer/?grinder=k-ultra&amp;clicks=65" hidden>Use 65 clicks in the brew timer</a>
 <a id="spec-link" hidden>View grinder reference <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
+<a class="result-reference" id="source-spec-link" hidden>View recipe grinder measurements</a>
 </section>
 </div>
 <div class="support">

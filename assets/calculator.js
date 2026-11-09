@@ -1,6 +1,8 @@
 const form = document.querySelector("#grind-form");
 const brand = document.querySelector("#brand");
 const grinder = document.querySelector("#grinder");
+const destination = document.querySelector("#destination");
+const destinationNote = document.querySelector("#destination-note");
 const microns = document.querySelector("#microns");
 const positionInput = document.querySelector("#position");
 const positionLabel = document.querySelector("#position-label");
@@ -24,6 +26,7 @@ const comparisonTimer = document.querySelector("#comparison-timer");
 const communityNote = document.querySelector("#community-note");
 const communitySource = document.querySelector("#community-source");
 const reference = document.querySelector("#spec-link");
+const sourceReference = document.querySelector("#source-spec-link");
 const idleMessage = summary.textContent;
 const formatMicrons = (value) => new Intl.NumberFormat("en").format(value);
 const reverseMode = () => form.elements.direction.value === "reverse";
@@ -60,6 +63,9 @@ function showProgress(profile, position) {
 for (const name of new Set(grinderProfiles.map((profile) => profile.brand))) {
   brand.append(new Option(name, name));
 }
+for (const profile of grinderProfiles.filter((entry) => entry.curve).sort((a, b) => grinderName(a).localeCompare(grinderName(b)))) {
+  destination.append(new Option(grinderName(profile), profile.id));
+}
 
 function updateModels() {
   grinder.disabled = !brand.value;
@@ -75,11 +81,13 @@ function updateInput() {
   const profile = grinderProfiles.find((entry) => entry.id === grinder.value);
   const curve = profile?.curve;
   const reverse = reverseMode();
+  const targetProfile = grinderProfiles.find((entry) => entry.id === destination.value);
+  const outputProfile = targetProfile ?? profile;
   spec.hidden = !profile;
   error.hidden = true;
   value.textContent = "—";
-  unit.textContent = reverse ? "µm" : profile?.setting ? "Dial setting" : "Clicks from zero";
-  resultTitle.textContent = reverse ? "Estimated grind size" : "Estimated setting";
+  unit.textContent = reverse && !targetProfile ? "µm" : outputProfile?.setting ? "Dial setting" : "Clicks from zero";
+  resultTitle.textContent = reverse && !targetProfile ? "Estimated grind size" : "Estimated setting";
   gauge.style.removeProperty("--progress");
   progress.hidden = true;
   summary.textContent = idleMessage;
@@ -89,31 +97,37 @@ function updateInput() {
   communityNote.hidden = true;
   communitySource.hidden = true;
   reference.hidden = true;
+  sourceReference.hidden = true;
   calculate.hidden = false;
   next.hidden = true;
   const missingData = Boolean(profile && !curve);
   sizeField.hidden = reverse;
   positionField.hidden = !reverse;
-  microns.disabled = reverse || missingData;
+  microns.disabled = reverse || Boolean(outputProfile && !outputProfile.curve);
   positionInput.disabled = !reverse || !curve;
   positionInput.required = reverse;
   positionInput.inputMode = profile?.setting ? "text" : "numeric";
   positionLabel.textContent = profile?.setting ? "Dial setting" : "Clicks from zero";
-  calculate.disabled = !curve;
-  calculateLabel.textContent = reverse ? "Estimate grind size" : profile?.setting ? "Calculate setting" : "Calculate clicks";
+  calculate.disabled = reverse ? !curve : !outputProfile?.curve;
+  calculateLabel.textContent = targetProfile ? "Convert grind" : reverse ? "Estimate grind size" : profile?.setting ? "Calculate setting" : "Calculate clicks";
+  destinationNote.textContent = targetProfile
+    ? "Measured range for " + grinderName(targetProfile) + ": " + sizeRange(targetProfile.curve) + "."
+    : "Choose your grinder to get its clicks or dial position.";
 
   if (curve) {
     const first = settingText(profile, Math.round(curve[0][0]));
     const last = settingText(profile, Math.round(curve.at(-1)[0]));
     positionNote.textContent = "Measured settings: " + first + "–" + last + (profile.setting ? "." : " clicks.");
     positionInput.placeholder = "e.g. " + first;
-    spec.textContent = "Measured size range: " + formatMicrons(Math.ceil(curve[0][1])) + "–" + formatMicrons(Math.floor(curve.at(-1)[1])) + " µm";
+    spec.textContent = "Measured size range: " + sizeRange(curve);
   } else if (missingData) {
     spec.textContent = "This model needs more measured settings to estimate clicks.";
-    summary.textContent = "Use the manufacturer’s setting guide for this grinder.";
-    reference.href = profile.guide ?? grinderReference;
-    reference.textContent = "View manufacturer’s guide";
-    reference.hidden = false;
+    if (reverse || !targetProfile) {
+      summary.textContent = "Use the manufacturer’s setting guide for this grinder.";
+      reference.href = profile.guide ?? grinderReference;
+      reference.textContent = "View manufacturer’s guide";
+      reference.hidden = false;
+    }
   }
   const brewReference = profile && brewReferences[profile.id];
   if (brewReference) {
@@ -125,21 +139,29 @@ function updateInput() {
   }
 }
 
+function sizeRange(curve) {
+  return formatMicrons(Math.ceil(curve[0][1])) + "–" + formatMicrons(Math.floor(curve.at(-1)[1])) + " µm";
+}
+
 brand.addEventListener("change", updateModels);
 grinder.addEventListener("change", updateInput);
+destination.addEventListener("change", updateInput);
 microns.addEventListener("input", updateInput);
 positionInput.addEventListener("input", updateInput);
 for (const radio of form.elements.direction) radio.addEventListener("change", updateInput);
 form.addEventListener("submit", (event) => {
   event.preventDefault();
   const profile = grinderProfiles.find((entry) => entry.id === grinder.value);
-  if (!profile?.curve) return;
-
+  const targetProfile = grinderProfiles.find((entry) => entry.id === destination.value);
   const reverse = reverseMode();
+  const outputProfile = targetProfile ?? profile;
+  if (!outputProfile?.curve || (reverse && !profile?.curve)) return;
   const position = reverse ? parsePosition(profile, positionInput.value) : null;
-  const estimate = reverse ? estimateMicrons(profile.curve, position) : estimateClicks(profile.curve, microns.valueAsNumber);
-  const target = reverse ? estimate?.microns : microns.valueAsNumber;
-  const community = profile.community;
+  const sourceEstimate = reverse ? estimateMicrons(profile.curve, position) : null;
+  const target = reverse ? sourceEstimate?.microns : microns.valueAsNumber;
+  const showMicrons = reverse && !targetProfile;
+  const estimate = showMicrons ? sourceEstimate : estimateClicks(outputProfile.curve, target);
+  const community = outputProfile.community;
   const communityEstimate = community && estimateClicks(community.curve, target);
   if (communityEstimate) {
     communityNote.textContent = "DCInside reference: about " + communityEstimate.clicks + " clicks on the tested unit · " + community.label + ".";
@@ -149,35 +171,46 @@ form.addEventListener("submit", (event) => {
     communitySource.hidden = false;
   }
   if (!estimate) {
-    error.textContent = reverse ? "Enter a setting within the measured range using the dial’s notation." : "This target is outside the measured range.";
+    error.textContent = reverse && !sourceEstimate
+      ? "Enter a setting within the recipe grinder’s measured range using its dial notation."
+      : "The target falls outside " + grinderName(outputProfile) + "’s measured range (" + sizeRange(outputProfile.curve) + ").";
     error.hidden = false;
     (reverse ? positionInput : microns).focus();
     return;
   }
 
   const { interval } = estimate;
-  const clicks = reverse ? position : estimate.clicks;
-  value.textContent = reverse ? formatMicrons(Math.round(target)) : settingText(profile, clicks).split(" + ")[0];
-  unit.textContent = reverse ? "µm" : profile.setting ? "Dial " + profile.setting(clicks) : "Clicks from zero";
-  summary.textContent = reverse
+  const clicks = showMicrons ? position : estimate.clicks;
+  value.textContent = showMicrons ? formatMicrons(Math.round(target)) : settingText(outputProfile, clicks).split(" + ")[0];
+  unit.textContent = showMicrons ? "µm" : outputProfile.setting ? "Dial " + outputProfile.setting(clicks) : "Clicks from zero";
+  summary.textContent = showMicrons
     ? grinderName(profile) + " at " + grinderSetting(profile, clicks) + ": about " + value.textContent + " µm."
-    : "Starting point for " + grinderName(profile) + ": " + grinderSetting(profile, clicks) + ".";
-  showProgress(profile, clicks);
+    : "Starting point for " + grinderName(outputProfile) + ": " + grinderSetting(outputProfile, clicks) + ".";
+  if (reverse && targetProfile) {
+    summary.textContent += " Recipe: " + grinderName(profile) + " at " + grinderSetting(profile, position) + " (about " + formatMicrons(Math.round(target)) + " µm).";
+  }
+  showProgress(outputProfile, clicks);
   const fittedSizes = interval.map((size) => formatMicrons(Math.round(size))).join("–");
-  note.textContent = profile.basis + " · Fitted data: " + fittedSizes + " µm";
+  note.textContent = outputProfile.basis + " · Fitted data: " + fittedSizes + " µm";
   note.hidden = false;
-  const showComparison = !reverse && profile.id === "k-ultra" && target === 750;
+  const showComparison = !reverse && outputProfile.id === "k-ultra" && target === 750;
   comparisonNote.hidden = !showComparison;
   comparisonTimer.hidden = !showComparison;
-  reference.href = profile.source;
+  reference.href = outputProfile.source;
   reference.textContent = "View measurement source";
   reference.hidden = false;
-  next.href = "./timer/?" + new URLSearchParams({ grinder: profile.id, clicks });
+  if (reverse && targetProfile && profile.id !== targetProfile.id) {
+    sourceReference.href = profile.source;
+    sourceReference.hidden = false;
+    note.textContent += " · Recipe grinder data: " + profile.basis;
+  }
+  next.href = "./timer/?" + new URLSearchParams({ grinder: outputProfile.id, clicks });
   next.hidden = false;
   calculate.hidden = true;
   next.focus();
 });
 const refreshModels = themeSelect(grinder);
 themeSelect(brand);
+themeSelect(destination);
 updateModels();
 
