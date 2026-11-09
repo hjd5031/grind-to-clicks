@@ -67,6 +67,11 @@ input::placeholder { color: var(--muted); opacity: 1; }
 .preset-field { margin-bottom: 1rem; }
 .preset-source { display: inline-block; margin-top: .35rem; font-size: .85rem; color: var(--accent); }
 #model-spec { margin: -.45rem 0 .9rem; }
+.conversion-mode { display: flex; flex-wrap: wrap; gap: .25rem 1rem; margin: 0 0 1rem; padding: 0; border: 0; }
+.conversion-mode legend { font-size: .92rem; font-weight: 750; margin-bottom: .35rem; }
+.conversion-mode label { display: flex; align-items: center; gap: .4rem; min-height: 2.75rem; margin: 0; }
+.conversion-mode input { width: 1.15rem; height: 1.15rem; min-height: 0; margin: 0; accent-color: var(--espresso); }
+#position-note { margin-top: .45rem; }
 select:disabled { background: var(--paper); color: var(--muted); opacity: 1; }
 .unit-field { position: relative; }
 .unit-field input { padding-right: 3.5rem; }

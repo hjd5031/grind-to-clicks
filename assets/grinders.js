@@ -166,6 +166,31 @@ const brewReferences = {
 const grinderName = (profile) => profile.brand + " " + profile.model;
 const grinderSetting = (profile, position) => profile.setting ? "dial " + profile.setting(position) : position + (position === 1 ? " click from zero" : " clicks from zero");
 
+// Confirmed full travel, separate from both measurement coverage and timer URL limits.
+const adjustmentRanges = {
+  "k-ultra": [0, 150],
+  k6: [0, 240],
+  "c3-esp-pro": [0, 90],
+  encore: [1, 40],
+  "encore-esp": [1, 40],
+  "ode-gen2": [1, 31],
+  opus: [1, 11],
+};
+
+function estimateMicrons(curve, position) {
+  const first = curve[0];
+  const last = curve.at(-1);
+  if (!Number.isInteger(position) || position < Math.round(first[0]) || position > Math.round(last[0])) return null;
+  if (position <= first[0]) return { microns: first[1], interval: [first[1]] };
+  if (position >= last[0]) return { microns: last[1], interval: [last[1]] };
+  const index = curve.findIndex(([setting]) => setting >= position);
+  const [upperPosition, upperMicrons] = curve[index];
+  if (position === upperPosition) return { microns: upperMicrons, interval: [upperMicrons] };
+  const [lowerPosition, lowerMicrons] = curve[index - 1];
+  const microns = lowerMicrons + (upperMicrons - lowerMicrons) * (position - lowerPosition) / (upperPosition - lowerPosition);
+  return { microns, interval: [lowerMicrons, upperMicrons] };
+}
+
 function estimateClicks(curve, microns) {
   if (!Number.isFinite(microns)) return null;
   const index = curve.findIndex((point) => point[1] >= microns);

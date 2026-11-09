@@ -6,10 +6,10 @@
 <meta name="description" content="Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.">
 <title>Coffee Grind Size Converter: Microns to Clicks | Grind to Clicks</title>
 <link rel="icon" href="./assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./assets/style.css?v=1.4">
+<link rel="stylesheet" href="./assets/style.css?v=1.7">
 <script src="./assets/select.js?v=1.4" defer></script>
-<script src="./assets/grinders.js?v=1.6" defer></script>
-<script src="./assets/calculator.js?v=1.6" defer></script>
+<script src="./assets/grinders.js?v=1.7" defer></script>
+<script src="./assets/calculator.js?v=1.7" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -27,18 +27,31 @@
 <div><label for="grinder">Grinder model</label><select id="grinder" required disabled aria-describedby="model-spec"><option value="">Select a brand first</option></select></div>
 </div>
 <p class="field-note" id="model-spec" hidden></p>
+<fieldset class="conversion-mode">
+<legend>Conversion direction</legend>
+<label><input type="radio" name="direction" value="forward" checked> µm to setting</label>
+<label><input type="radio" name="direction" value="reverse"> Setting to µm</label>
+</fieldset>
+<div id="size-field">
 <label for="microns">Target grind size</label>
 <div class="unit-field"><input id="microns" type="number" min="1" step="any" inputmode="decimal" placeholder="e.g. 600" required aria-describedby="size-note calc-error"><span aria-hidden="true">µm</span></div>
 <p id="size-note" class="field-note">Enter the micron value from your recipe.</p>
+</div>
+<div id="position-field" hidden>
+<label for="position" id="position-label">Clicks from zero</label>
+<input id="position" disabled aria-describedby="position-note calc-error">
+<p class="field-note" id="position-note"></p>
+</div>
 <p id="calc-error" class="error" role="alert" hidden></p>
-<button id="calculate" class="button primary" type="submit">Calculate clicks <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
+<button id="calculate" class="button primary" type="submit"><span id="calculate-label">Calculate clicks</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></button>
 <a id="next" class="button primary" href="./timer/" hidden>Open brew timer <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg></a>
 </form>
 <noscript><p>Enable JavaScript to calculate a setting.</p></noscript>
 </section>
 <section class="card result-card" aria-labelledby="result-title">
 <h2 id="result-title">Estimated setting</h2>
-<div class="gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small id="gauge-unit">Clicks from zero</small></div></div>
+<div class="gauge" id="setting-gauge" aria-hidden="true"><div class="gauge-core"><span id="gauge-value">—</span><small id="gauge-unit">Clicks from zero</small></div></div>
+<p class="result-note" id="position-progress" hidden></p>
 <p id="result-summary" role="status">Choose a grinder and enter your target to see a click estimate.</p>
 <p class="result-note" id="result-note" hidden></p>
 <p class="result-note" id="community-note" hidden></p>
