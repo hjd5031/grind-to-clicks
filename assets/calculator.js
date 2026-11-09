@@ -12,6 +12,8 @@ const summary = document.querySelector("#result-summary");
 const note = document.querySelector("#result-note");
 const comparisonNote = document.querySelector("#comparison-note");
 const comparisonTimer = document.querySelector("#comparison-timer");
+const communityNote = document.querySelector("#community-note");
+const communitySource = document.querySelector("#community-source");
 const reference = document.querySelector("#spec-link");
 const idleMessage = summary.textContent;
 const formatMicrons = (value) => new Intl.NumberFormat("en").format(value);
@@ -41,6 +43,8 @@ function updateInput() {
   note.hidden = true;
   comparisonNote.hidden = true;
   comparisonTimer.hidden = true;
+  communityNote.hidden = true;
+  communitySource.hidden = true;
   reference.hidden = true;
   calculate.hidden = false;
   next.hidden = true;
@@ -57,6 +61,14 @@ function updateInput() {
     reference.textContent = "View manufacturer’s guide";
     reference.hidden = false;
   }
+  const brewReference = profile && brewReferences[profile.id];
+  if (brewReference) {
+    communityNote.textContent = brewReference.text;
+    communitySource.href = brewReference.source;
+    communitySource.textContent = "View DCInside brew report";
+    communityNote.hidden = false;
+    communitySource.hidden = false;
+  }
 }
 
 brand.addEventListener("change", updateModels);
@@ -67,7 +79,17 @@ form.addEventListener("submit", (event) => {
   const profile = grinderProfiles.find((entry) => entry.id === grinder.value);
   if (!profile?.curve) return;
 
-  const estimate = estimateClicks(profile.curve, microns.valueAsNumber);
+  const target = microns.valueAsNumber;
+  const community = profile.community;
+  const communityEstimate = community && estimateClicks(community.curve, target);
+  if (communityEstimate) {
+    communityNote.textContent = "DCInside reference: about " + communityEstimate.clicks + " clicks on the tested unit · " + community.label + ".";
+    communitySource.href = community.source;
+    communitySource.textContent = "View DCInside measurement";
+    communityNote.hidden = false;
+    communitySource.hidden = false;
+  }
+  const estimate = estimateClicks(profile.curve, target);
   if (!estimate) {
     error.textContent = "This target is outside the supported range. " + spec.textContent + ".";
     error.hidden = false;
@@ -82,7 +104,7 @@ form.addEventListener("submit", (event) => {
   const fittedSizes = interval.map((size) => formatMicrons(Math.round(size))).join("–");
   note.textContent = profile.basis + " · Fitted data: " + fittedSizes + " µm";
   note.hidden = false;
-  const showComparison = profile.id === "k-ultra" && microns.valueAsNumber === 750;
+  const showComparison = profile.id === "k-ultra" && target === 750;
   comparisonNote.hidden = !showComparison;
   comparisonTimer.hidden = !showComparison;
   reference.href = profile.source;
