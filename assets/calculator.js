@@ -10,6 +10,8 @@ const value = document.querySelector("#gauge-value");
 const unit = document.querySelector("#gauge-unit");
 const summary = document.querySelector("#result-summary");
 const note = document.querySelector("#result-note");
+const comparisonNote = document.querySelector("#comparison-note");
+const comparisonTimer = document.querySelector("#comparison-timer");
 const reference = document.querySelector("#spec-link");
 const idleMessage = summary.textContent;
 const formatMicrons = (value) => new Intl.NumberFormat("en").format(value);
@@ -37,6 +39,8 @@ function updateInput() {
   unit.textContent = profile?.setting ? "Dial setting" : "Clicks from zero";
   summary.textContent = idleMessage;
   note.hidden = true;
+  comparisonNote.hidden = true;
+  comparisonTimer.hidden = true;
   reference.hidden = true;
   calculate.hidden = false;
   next.hidden = true;
@@ -76,6 +80,9 @@ form.addEventListener("submit", (event) => {
   summary.textContent = "Starting point for " + grinderName(profile) + ": " + grinderSetting(profile, clicks) + ".";
   note.textContent = profile.basis;
   note.hidden = false;
+  const showComparison = profile.id === "k-ultra" && microns.valueAsNumber === 750;
+  comparisonNote.hidden = !showComparison;
+  comparisonTimer.hidden = !showComparison;
   reference.href = profile.source;
   reference.textContent = "View measurement source";
   reference.hidden = false;

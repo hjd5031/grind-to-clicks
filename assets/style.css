@@ -89,6 +89,7 @@ button:disabled { cursor: default; opacity: .62; }
 .gauge-core small { color: var(--latte); font-size: .8rem; font-weight: 650; }
 #result-summary, #timer-state { color: var(--cream); max-width: 31ch; font-size: .92rem; line-height: 1.45; }
 .result-note { color: var(--latte); font-size: .82rem; margin-top: .55rem; }
+.result-reference { color: var(--latte); font-size: .875rem; margin-top: .45rem; }
 #spec-link { margin-top: .65rem; color: var(--latte); font-weight: 650; font-size: .875rem; }
 #spec-link svg, .help a svg { width: 1rem; height: 1rem; }
 

@@ -54,7 +54,8 @@ function themeSelect(select) {
     }
   });
   details.addEventListener("focusout", (event) => {
-    if (!details.contains(event.relatedTarget)) details.open = false;
+    // Touch browsers can blur the trigger before dispatching the option click.
+    if (event.relatedTarget && !details.contains(event.relatedTarget)) details.open = false;
   });
   document.addEventListener("pointerdown", (event) => {
     if (!details.contains(event.target)) details.open = false;
