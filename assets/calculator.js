@@ -214,3 +214,51 @@ themeSelect(brand);
 themeSelect(destination);
 updateModels();
 
+const playExample = document.querySelector("#play-example");
+const exampleScene = document.querySelector("#example-scene");
+const exampleSize = document.querySelector("#example-size");
+const exampleTo = document.querySelector("#example-to");
+const exampleStatus = document.querySelector("#example-status");
+const exampleMicrons = estimateMicrons(grinderProfiles.find((profile) => profile.id === "c40").curve, 21).microns;
+const exampleClicks = estimateClicks(grinderProfiles.find((profile) => profile.id === "k-ultra").curve, exampleMicrons).clicks;
+const exampleSizeText = "≈ " + formatMicrons(Math.round(exampleMicrons)) + " µm";
+
+playExample.addEventListener("click", () => {
+  exampleSize.textContent = "—";
+  exampleTo.textContent = "—";
+  exampleStatus.textContent = "";
+  exampleScene.dataset.step = "source";
+  playExample.disabled = true;
+  const showSize = () => {
+    exampleScene.dataset.step = "size";
+    exampleSize.textContent = exampleSizeText;
+  };
+  const showResult = () => {
+    exampleScene.dataset.step = "result";
+    exampleTo.textContent = "≈ " + exampleClicks + " clicks";
+    exampleStatus.textContent = "C40 at 21 clicks converts through " + Math.round(exampleMicrons) + " microns to about " + exampleClicks + " K-Ultra clicks.";
+    playExample.textContent = "Replay demo";
+    playExample.disabled = false;
+  };
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    showSize();
+    showResult();
+    return;
+  }
+  window.setTimeout(showSize, 650);
+  window.setTimeout(showResult, 1500);
+});
+
+document.querySelector("#use-example").addEventListener("click", () => {
+  brand.value = "Comandante";
+  brand.dispatchEvent(new Event("change"));
+  grinder.value = "c40";
+  grinder.dispatchEvent(new Event("change"));
+  form.elements.direction.value = "reverse";
+  destination.value = "k-ultra";
+  positionInput.value = "21";
+  destination.dispatchEvent(new Event("change"));
+  positionInput.focus();
+  form.requestSubmit();
+});
+

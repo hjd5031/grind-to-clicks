@@ -6,10 +6,10 @@
 <meta name="description" content="Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.">
 <title>Coffee Grind Size Converter: Microns to Clicks | Grind to Clicks</title>
 <link rel="icon" href="./assets/bean.svg" type="image/svg+xml">
-<link rel="stylesheet" href="./assets/style.css?v=1.8">
+<link rel="stylesheet" href="./assets/style.css?v=1.9">
 <script src="./assets/select.js?v=1.4" defer></script>
 <script src="./assets/grinders.js?v=1.7" defer></script>
-<script src="./assets/calculator.js?v=1.8" defer></script>
+<script src="./assets/calculator.js?v=1.9" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -17,10 +17,10 @@
 <a class="brand" href="./"><span class="brand-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="12" rx="7" ry="9" transform="rotate(35 12 12)"/><path d="M16 5c-5 2-1 8-8 14"/></svg></span>Grind to Clicks</a>
 <nav aria-label="Main navigation"><a href="./" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 12l3-4M12 2v2M2 12h2m16 0h2m-10 8v2"/><circle cx="12" cy="12" r="1"/></svg>Calculator</a><a href="./timer/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6m-3 0v3m5 1 2-2"/></svg>Brew timer</a><a href="./changelog/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.65" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 8h6m-6 4h6m-6 4h4"/></svg>Changelog</a></nav>
 </div></header>
-<main id="main" class="wrap"><header class="page-heading"><h1>Coffee grind size converter</h1><p class="lede">Convert a coffee recipe’s grind size in microns to estimated clicks for your grinder.</p></header>
-<div class="tool-grid">
-<section class="card tool" aria-labelledby="calc-title">
-<div class="card-heading"><div><h2 id="calc-title">Grinder settings</h2></div></div>
+<main id="main" class="wrap calculator-page"><header class="page-heading"><h1>Coffee grind size converter</h1><p class="lede">Find a starting point for your grinder from a recipe’s microns or clicks.</p></header>
+<div class="tool-grid calculator-grid">
+<section class="tool calculator-input" aria-labelledby="calc-title">
+<h2 id="calc-title" class="sr-only">Grinder settings</h2>
 <form id="grind-form">
 <div class="grinder-fields">
 <div><label for="brand">Brand</label><select id="brand" required><option value="">Select a brand</option></select></div>
@@ -68,6 +68,24 @@
 </section>
 </div>
 <div class="support">
+<section class="example" aria-labelledby="example-title">
+<div class="example-copy">
+<h2 id="example-title">From C40 to K‑Ultra</h2>
+<p>Watch how a recipe’s 21 clicks become a starting point on another grinder.</p>
+<div class="example-actions">
+<button type="button" class="button secondary" id="play-example">Play demo</button>
+<button type="button" class="example-use" id="use-example">Try in calculator</button>
+</div>
+</div>
+<div class="example-scene" id="example-scene" aria-label="C40 to K-Ultra example">
+<dl>
+<div><dt>Comandante C40</dt><dd id="example-from">21 clicks</dd></div>
+<div><dt>Estimated grind size</dt><dd id="example-size">—</dd></div>
+<div><dt>1Zpresso K‑Ultra</dt><dd id="example-to">—</dd></div>
+</dl>
+<p class="sr-only" id="example-status" role="status"></p>
+</div>
+</section>
 <details class="card help"><summary>How is this calculated?</summary><p>We use published measurements of ground coffee at known click settings. We average neighboring measurements where the trend reverses, then interpolate within the supported range and round to the nearest click. Results are starting points and can vary with the beans and grinder zero point.</p><p>Check the statistic next to your result. Onyx labels its values average particle size. The K6 source reports the median (D50). These statistics can differ. For Red Clix, we apply <a href="https://comandantegrinder.com/products/red-clix-drivetrain-set">Comandante’s 2:1 click ratio</a> to the C40 reference. DCInside photo measurements are shown with their own source and zero-point conventions. Their values may differ from instrument measurements. Models without enough measurements link to a setting guide.</p></details>
 </div></main>
 <footer class="wrap footer"><a href="https://github.com/hjd5031/grind-to-clicks">View source on GitHub</a></footer>
