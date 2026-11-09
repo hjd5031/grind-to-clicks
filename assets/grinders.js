@@ -38,6 +38,14 @@ const k6Curve = measuredCurve([
   [20,350.38], [30,369.22], [40,441.56], [50,582.6], [60,629.8], [70,747.8],
   [80,801.82], [90,943.48], [100,934.68], [110,1151.04], [120,1161.32],
 ]);
+// Same D50 protocol as K6. Timemore's ESP dial uses 30 clicks per turn.
+// Start at 0.4 turns to stay outside the manufacturer's finest exclusion zone.
+const c3EspProCurve = measuredCurve([
+  [12,341.82], [18,405], [24,444.82], [30,530.66], [36,659.18], [42,809.38],
+  [48,944.94], [54,1128.7], [60,1255.12], [66,1304.98], [72,1180.5],
+  [78,1591.28], [84,1632.3], [90,1619.72],
+]);
+const benchmarkBasis = "Median particle size (D50) · 9 Bar Benchmark (DiFluid Omni)";
 const onyxBasis = "Average particle size · Onyx Coffee Lab (DiFluid Omni)";
 const c40Basis = onyxBasis + " · C40 sample, applied to MK4 standard";
 const encoreCurve = measuredCurve([
@@ -65,13 +73,13 @@ const grinderProfiles = [
   { id: "x-ultra", brand: "1Zpresso", model: "X-Ultra", maxClicks: 270 },
   { id: "jx-pro-s", brand: "1Zpresso", model: "JX-Pro S" },
   { id: "k4", brand: "KINGrinder", model: "K4", guide: kingrinderReference },
-  { id: "k6", brand: "KINGrinder", model: "K6", curve: k6Curve, basis: "Median particle size (D50) · 9 Bar Benchmark (DiFluid Omni)", source: "https://www.9barbenchmark.com/grinders/kingrinder-k6-review", guide: kingrinderReference },
+  { id: "k6", brand: "KINGrinder", model: "K6", curve: k6Curve, basis: benchmarkBasis, source: "https://www.9barbenchmark.com/grinders/kingrinder-k6-review", guide: kingrinderReference },
   { id: "q-air", brand: "1Zpresso", model: "Q Air" },
   { id: "k-max", brand: "1Zpresso", model: "K-Max" },
   { id: "c60", brand: "Comandante", model: "C60 Baracuda", guide: "https://comandantegrinder.com/downloads/c60-baracuda.pdf" },
   { id: "k2", brand: "KINGrinder", model: "K2", guide: kingrinderReference },
   { id: "c3", brand: "Timemore", model: "Chestnut C3", guide: "https://www.timemore.com/collections/coffee-grinder-manual/products/c3-series" },
-  { id: "c3-esp-pro", brand: "Timemore", model: "Chestnut C3 ESP Pro", guide: "https://www.timemore.com/collections/coffee-grinder-manual/products/c3-series" },
+  { id: "c3-esp-pro", brand: "Timemore", model: "Chestnut C3 ESP Pro", curve: c3EspProCurve, basis: benchmarkBasis, source: "https://www.9barbenchmark.com/grinders/c3-esp-pro-review", guide: "https://www.timemore.com/collections/coffee-grinder-manual/products/c3-series", maxClicks: 90 },
   { id: "encore", brand: "Baratza", model: "Encore", curve: encoreCurve, basis: onyxBasis, source: onyxSource, setting: String, maxClicks: 40 },
   { id: "encore-esp", brand: "Baratza", model: "Encore ESP", guide: "https://www.baratza.com/en-us/product/encore-esp-zcg495" },
   { id: "vario-plus", brand: "Baratza", model: "Vario+", guide: "https://www.baratza.com/en-us/product/vario-zcg820" },
@@ -84,10 +92,12 @@ const grinderName = (profile) => profile.brand + " " + profile.model;
 const grinderSetting = (profile, position) => profile.setting ? "dial " + profile.setting(position) : position + (position === 1 ? " click from zero" : " clicks from zero");
 
 function estimateClicks(curve, microns) {
+  if (!Number.isFinite(microns)) return null;
   const index = curve.findIndex((point) => point[1] >= microns);
   if (index < 0 || microns < curve[0][1]) return null;
-  if (index === 0) return Math.round(curve[0][0]);
+  if (curve[index][1] === microns) return { clicks: Math.round(curve[index][0]), interval: [microns] };
   const [lowerClicks, lowerMicrons] = curve[index - 1];
   const [upperClicks, upperMicrons] = curve[index];
-  return Math.round(lowerClicks + (upperClicks - lowerClicks) * (microns - lowerMicrons) / (upperMicrons - lowerMicrons));
+  const clicks = Math.round(lowerClicks + (upperClicks - lowerClicks) * (microns - lowerMicrons) / (upperMicrons - lowerMicrons));
+  return { clicks, interval: [lowerMicrons, upperMicrons] };
 }

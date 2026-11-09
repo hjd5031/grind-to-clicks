@@ -67,18 +67,20 @@ form.addEventListener("submit", (event) => {
   const profile = grinderProfiles.find((entry) => entry.id === grinder.value);
   if (!profile?.curve) return;
 
-  const clicks = estimateClicks(profile.curve, microns.valueAsNumber);
-  if (clicks === null) {
+  const estimate = estimateClicks(profile.curve, microns.valueAsNumber);
+  if (!estimate) {
     error.textContent = "This target is outside the supported range. " + spec.textContent + ".";
     error.hidden = false;
     microns.focus();
     return;
   }
 
+  const { clicks, interval } = estimate;
   value.textContent = profile.setting ? profile.setting(clicks).split(" + ")[0] : String(clicks);
   unit.textContent = profile.setting ? "Dial " + profile.setting(clicks) : "Clicks from zero";
   summary.textContent = "Starting point for " + grinderName(profile) + ": " + grinderSetting(profile, clicks) + ".";
-  note.textContent = profile.basis;
+  const fittedSizes = interval.map((size) => formatMicrons(Math.round(size))).join("–");
+  note.textContent = profile.basis + " · Fitted data: " + fittedSizes + " µm";
   note.hidden = false;
   const showComparison = profile.id === "k-ultra" && microns.valueAsNumber === 750;
   comparisonNote.hidden = !showComparison;
